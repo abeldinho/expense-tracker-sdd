@@ -1,10 +1,24 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
+from django.shortcuts import render, redirect
 
 from .serializers import ExpenseSerializer
+from .forms import ExpenseForm
 from .services import create_expense, get_balance
 from .models import Expense
+
+def create_expense_form(request):
+    if request.method == "POST":
+        form = ExpenseForm(request.POST)
+        if form.is_valid():
+            create_expense(form.cleaned_data)
+            return redirect("/form/")
+
+    else:
+        form = ExpenseForm()
+
+    return render(request, "form.html", {"form": form})
 
 class ExpenseCreateView(APIView):
 
@@ -25,7 +39,7 @@ class ExpenseCreateView(APIView):
             },
             status=status.HTTP_201_CREATED
         )
-
+    
 class ExpenseListView(APIView):
 
     def get(self, request):
