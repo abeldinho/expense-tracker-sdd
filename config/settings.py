@@ -29,12 +29,8 @@ DEBUG = True
 ALLOWED_HOSTS = ["*"]
 
 CSRF_TRUSTED_ORIGINS = [
-    "https://expense-tracker-sdd.onrender.com"
+    os.getenv("DOMAIN_URL")
 ]
-# CSRF_TRUSTED_ORIGINS = [
-#     os.getenv("DOMAIN_URL")
-# ]
-
 # Application definition
 
 INSTALLED_APPS = [
