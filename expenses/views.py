@@ -16,7 +16,7 @@ def create_expense_form(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Gasto registrado correctamente")
-            return redirect("/form/")
+            return redirect("/api/ingresar")
         messages.warning(request, "Revisa los datos")
     else:
         form = ExpenseForm()
