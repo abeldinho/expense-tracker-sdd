@@ -18,14 +18,13 @@ def create_expense_form(request):
             messages.success(request, "Gasto registrado correctamente")
             return redirect("/form/")
         messages.warning(request, "Revisa los datos")
-        messages.error(request, "Error al guardar")
     else:
         form = ExpenseForm()
 
     expenses = Expense.objects.all().order_by("-created_at")
     balance = get_balance()
 
-    return render(request, "expenses/form.html", {
+    return render(request, "form.html", {
         "form": form,
         "expenses": expenses,
         "balance": balance
