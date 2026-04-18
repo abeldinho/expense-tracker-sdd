@@ -7,18 +7,29 @@ from .serializers import ExpenseSerializer
 from .forms import ExpenseForm
 from .services import create_expense, get_balance
 from .models import Expense
+from django.contrib import messages
+
 
 def create_expense_form(request):
     if request.method == "POST":
         form = ExpenseForm(request.POST)
         if form.is_valid():
-            create_expense(form.cleaned_data)
+            form.save()
+            messages.success(request, "Gasto registrado correctamente")
             return redirect("/form/")
-
+        messages.warning(request, "Revisa los datos")
+        messages.error(request, "Error al guardar")
     else:
         form = ExpenseForm()
 
-    return render(request, "form.html", {"form": form})
+    expenses = Expense.objects.all().order_by("-created_at")
+    balance = get_balance()
+
+    return render(request, "expenses/form.html", {
+        "form": form,
+        "expenses": expenses,
+        "balance": balance
+    })
 
 class ExpenseCreateView(APIView):
 
