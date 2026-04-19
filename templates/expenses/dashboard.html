@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h2 class="mb-4">📊 Dashboard de Gastos</h2>
+
+<!-- 🔎 Filtros -->
+<form method="get" class="row g-3 mb-4">
+
+  <!-- Categoría -->
+  <div class="col-md-3">
+    <select name="categoria" class="form-select">
+      <option value="">Todas las categorías</option>
+
+      {% for cat in categories %}
+        <option value="{{ cat.id }}"
+          {% if request.GET.categoria == cat.id|stringformat:"s" %}
+            selected
+          {% endif %}
+        >
+          {{ cat.name }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+
+  <!-- Fecha -->
+  <div class="col-md-3">
+    <input type="date" name="desde" class="form-control"
+           value="{{ request.GET.desde }}">
+  </div>
+
+  <div class="col-md-3">
+    <input type="date" name="hasta" class="form-control"
+           value="{{ request.GET.hasta }}">
+  </div>
+
+  <!-- Botón -->
+  <div class="col-md-3 d-flex gap-2">
+    <button class="btn btn-primary w-100">Filtrar</button>
+    <a href="{% url 'expenses:dashboard' %}" class="btn btn-outline-secondary">
+      Limpiar
+    </a>
+  </div>
+
+</form>
+{% if not expenses %}
+  <div class="alert alert-warning">
+    No hay datos para mostrar con estos filtros.
+  </div>
+{% endif %}
+
+<div class="row mb-4">
+
+  <!-- Total -->
+  <div class="col-md-4">
+    <div class="card bg-success text-white shadow-sm">
+      <div class="card-body text-center">
+        <h6 class="text-muted">💰 Total Gastado</h6>
+        <h3>${{ total_gastos }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Promedio -->
+  <div class="col-md-4">
+    <div class="card bg-primary text-white shadow-sm">
+      <div class="card-body text-center">
+        <h6 class="text-muted">📊 Promedio</h6>
+        <h3>${{ promedio_gastos|floatformat:0 }}</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- Categoría top -->
+  <div class="col-md-4">
+    <div class="card bg-warning text-dark shadow-sm">
+      <div class="card-body text-center">
+        <h6 class="text-muted">🏆 Categoría Top</h6>
+        <h3>{{ top_categoria }}</h3>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 📊 Gráfico -->
+<div class="row mb-4">
+  
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Gastos por categoría</h5>
+        <canvas id="pieChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-6">
+    <div class="card shadow-sm">
+      <div class="card-body">
+        <h5 class="card-title">Gastos por mes</h5>
+        <canvas id="lineChart"></canvas>
+      </div>
+    </div>
+  </div>
+
+</div>
+<hr>
+
+<!-- Lista -->
+<ul class="list-group mt-4">
+  {% for expense in expenses %}
+    <li class="list-group-item">
+      {{ expense.description }} - ${{ expense.amount }}
+    </li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
+
+{% block extra_js %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+  const pieLabels = {{ pie_labels|safe }};
+  const pieData = {{ pie_totals|safe }};
+
+  const lineLabels = {{ line_labels|safe }};
+  const lineData = {{ line_totals|safe }};
+
+  if (pieLabels.length) {
+    new Chart(document.getElementById('pieChart'), {
+      type: 'pie',
+      data: {
+        labels: pieLabels,
+        datasets: [{
+          data: pieData,
+        }]
+      }
+    });
+  }
+
+  if (lineLabels.length) {
+    new Chart(document.getElementById('lineChart'), {
+      type: 'line',
+      data: {
+        labels: lineLabels,
+        datasets: [{
+          label: 'Gasto mensual',
+          data: lineData,
+          fill: false,
+          tension: 0.3
+        }]
+      }
+    });
+  }
+</script>
+{% endblock %}

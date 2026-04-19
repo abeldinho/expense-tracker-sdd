@@ -2,6 +2,7 @@ from django.shortcuts import render,redirect
 from django.contrib.auth import login
 from django.contrib import messages
 from .forms import SignUpForm
+from django.contrib.auth.forms import AuthenticationForm
 
 def signup_view(request):
     if request.method == "POST":
@@ -16,3 +17,15 @@ def signup_view(request):
         form = SignUpForm()
 
     return render(request, "auth_users/signup.html", {"form": form})
+
+def login_view(request):
+    form = AuthenticationForm(request, data=request.POST or None)
+
+    if request.method == 'POST' and form.is_valid():
+        user = form.get_user()
+        login(request, user)
+        return redirect('expenses:ingresar_expense')  
+
+    return render(request, 'auth_users/login.html', {
+        'form': form
+    })

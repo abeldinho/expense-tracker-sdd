@@ -11,16 +11,76 @@
   {% block extra_css %}{% endblock %}
 </head>
 <body>
-<nav class="navbar navbar-dark bg-dark px-3">
-    <span class="navbar-brand">Expense Tracker</span>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+  <div class="container">
 
-    {% if request.user.is_authenticated %}
-        <span class="text-white">Hola {{ request.user.username }}</span>
-        <form method="post" action="{% url 'users:logout' %}" style="display:inline;">
-            {% csrf_token %}
-            <button class="btn btn-sm btn-outline-light">Salir</button>
-        </form>
-    {% endif %}
+    <!-- Brand -->
+    <a class="navbar-brand fw-bold" href="{% url 'expenses:ingresar_expense' %}">
+      💰 Seguimiento de Gastos
+    </a>
+
+    <!-- Toggle (mobile) -->
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+
+      <!-- Left links -->
+      <ul class="navbar-nav me-auto">
+        {% if request.user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'expenses:ingresar_expense' %}">
+              ➕ Inicio
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+      <ul class="navbar-nav me-auto">
+        {% if request.user.is_authenticated %}
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'expenses:dashboard' %}">
+              📊 Dashboard
+            </a>
+          </li>
+        {% endif %}
+      </ul>
+
+      <!-- Right side -->
+      <div class="d-flex align-items-center gap-2">
+
+        {% if request.user.is_authenticated %}
+
+        <div class="dropdown">
+            <button class="btn btn-outline-light btn-sm dropdown-toggle" data-bs-toggle="dropdown">
+                {{ request.user.username }}
+            </button>
+
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li>
+                <form method="post" action="{% url 'users:logout' %}">
+                    {% csrf_token %}
+                    <button class="dropdown-item">Cerrar sesión</button>
+                </form>
+                </li>
+            </ul>
+        </div>
+
+        {% else %}
+
+          <a href="{% url 'users:login' %}" class="btn btn-outline-light btn-sm">
+            Login
+          </a>
+
+          <a href="{% url 'users:register' %}" class="btn btn-success btn-sm">
+            Registro
+          </a>
+
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
 </nav>
 
 <div class="container mt-4">

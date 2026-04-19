@@ -10,4 +10,5 @@ urlpatterns = [
     path('balance/', views.BalanceView.as_view(),name='balance'),
     path('editar/<int:pk>/', views.editar_expense, name='editar_expense'),
     path('eliminar/<int:pk>/', views.delete_expense, name='eliminar_expense'),
+    path('', views.expense_dashboard, name='dashboard'),
 ]
