@@ -9,3 +9,4 @@ COPY . .
 
 #CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
 CMD sh -c "python manage.py migrate && python manage.py collectstatic --noinput && python manage.py createadmin && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT"
+#CMD sh -c "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn config.wsgi:application --bind 0.0.0.0:$PORT"

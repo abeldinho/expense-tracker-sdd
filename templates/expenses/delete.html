@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}Gastos{% endblock %}
+
+{% block content %}
+<h2>🗑️ Eliminar gasto</h2>
+
+<p>¿Seguro que quieres eliminar "{{ expense.description }}"?</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button class="btn btn-danger">Eliminar</button>
+    <a href="{% url 'expenses:ingresar_expense' %}" class="btn btn-secondary">Cancelar</a>
+</form>
+</ul>
+{% endblock %}

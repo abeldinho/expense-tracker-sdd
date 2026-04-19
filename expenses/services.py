@@ -10,6 +10,6 @@ def create_expense(data):
     return Expense.objects.create(**data)
 
 
-def get_balance():
-    result = Expense.objects.aggregate(total=Sum("amount"))
+def get_balance(user):
+    result = Expense.objects.filter(user=user).aggregate(total=Sum("amount"))
     return result["total"] or 0
