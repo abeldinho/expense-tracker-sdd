@@ -29,8 +29,8 @@
             <option value="">Todas las categorías</option>
 
             {% for cat in categorias %}
-                <option value="{{ cat.name }}"
-                {% if request.GET.expense_type == cat.name|stringformat:"s" %}
+                <option value="{{ cat.id }}"
+                {% if request.GET.expense_type.name == cat.name|stringformat:"s" %}
                     selected
                 {% endif %}
                 >
