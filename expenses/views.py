@@ -22,7 +22,7 @@ def create_expense_form(request):
             form.save()
             messages.success(request, "Gasto registrado correctamente")
             return redirect("expenses:ingresar_expense")
-        messages.warning(request, "Revisa los datos")
+        messages.warning(request, form.errors)
     else:
         form = ExpenseForm()
 
