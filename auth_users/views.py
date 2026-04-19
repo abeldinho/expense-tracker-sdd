@@ -19,13 +19,14 @@ def signup_view(request):
     return render(request, "auth_users/signup.html", {"form": form})
 
 def login_view(request):
-    form = AuthenticationForm(request, data=request.POST or None)
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
 
-    if request.method == 'POST' and form.is_valid():
-        user = form.get_user()
-        login(request, user)
-        return redirect('expenses:ingresar_expense')  
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('expenses:ingresar_expense')
+    else:
+        form = AuthenticationForm()
 
-    return render(request, 'auth_users/login.html', {
-        'form': form
-    })
+    return render(request, 'auth_users/login.html', {'form': form})
