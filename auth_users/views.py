@@ -1,5 +1,5 @@
 from django.shortcuts import render,redirect
-from django.contrib.auth import login
+from django.contrib.auth import authenticate, login
 from django.contrib import messages
 from .forms import SignUpForm
 from django.contrib.auth.forms import AuthenticationForm
@@ -19,14 +19,20 @@ def signup_view(request):
     return render(request, "auth_users/signup.html", {"form": form})
 
 def login_view(request):
+    error = None
+
     if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
-        if form.is_valid():
-            user = form.get_user()
+        user = authenticate(request, username=username, password=password)
+
+        if user is not None:
             login(request, user)
-            return redirect('expenses:ingresar_expense')
-    else:
-        form = AuthenticationForm()
+            return redirect('expenses:registrar_expense')
+        else:
+            error = "Usuario o contraseña incorrectos"
 
-    return render(request, 'auth_users/login.html', {'form': form})
+    return render(request, 'auth_users/login.html', {
+        'error': error
+    })
