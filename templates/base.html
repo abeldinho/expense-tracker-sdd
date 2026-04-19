@@ -16,7 +16,10 @@
 
     {% if request.user.is_authenticated %}
         <span class="text-white">Hola {{ request.user.username }}</span>
-        <a href="{% url 'users:logout' %}" class="btn btn-sm btn-outline-light">Salir</a>
+        <form method="post" action="{% url 'users:logout' %}" style="display:inline;">
+            {% csrf_token %}
+            <button class="btn btn-sm btn-outline-light">Salir</button>
+        </form>
     {% endif %}
 </nav>
 
