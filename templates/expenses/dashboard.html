@@ -7,9 +7,9 @@
 <form method="get" class="row g-3 mb-4">
 
   <!-- Categoría -->
-  <div class="col-md-3">
+  <div class="col-12 col-md-3">
     <select name="categoria" class="form-select">
-      <option value="">Todas las categorías</option>
+      <option value="">Filtrar por categoría</option>
 
       {% for cat in categories %}
         <option value="{{ cat.id }}"
@@ -24,20 +24,20 @@
   </div>
 
   <!-- Fecha -->
-  <div class="col-md-3">
+  <div class="col-12 col-md-3">
     <input type="date" name="desde" class="form-control"
            value="{{ request.GET.desde }}">
   </div>
 
-  <div class="col-md-3">
+  <div class="col-12 col-md-3">
     <input type="date" name="hasta" class="form-control"
            value="{{ request.GET.hasta }}">
   </div>
 
   <!-- Botón -->
-  <div class="col-md-3 d-flex gap-2">
+  <div class="col-12 col-md-3 d-flex gap-2">
     <button class="btn btn-primary w-100">Filtrar</button>
-    <a href="{% url 'expenses:dashboard' %}" class="btn btn-outline-secondary">
+    <a href="{% url 'expenses:dashboard' %}" class="btn btn-outline-secondary w-100">
       Limpiar
     </a>
   </div>
@@ -52,30 +52,30 @@
 <div class="row mb-4">
 
   <!-- Total -->
-  <div class="col-md-4">
+  <div class="col-12 col-md-4">
     <div class="card bg-success text-white shadow-sm">
       <div class="card-body text-center">
-        <h6 class="text-muted">💰 Total Gastado</h6>
+        <h6 class="text-white-50">💰 Total Gastado</h6>
         <h3>${{ total_gastos }}</h3>
       </div>
     </div>
   </div>
 
   <!-- Promedio -->
-  <div class="col-md-4">
+  <div class="col-12 col-md-4">
     <div class="card bg-primary text-white shadow-sm">
       <div class="card-body text-center">
-        <h6 class="text-muted">📊 Promedio</h6>
+        <h6 class="text-white-50">📊 Promedio</h6>
         <h3>${{ promedio_gastos|floatformat:0 }}</h3>
       </div>
     </div>
   </div>
 
   <!-- Categoría top -->
-  <div class="col-md-4">
+  <div class="col-12 col-md-4">
     <div class="card bg-warning text-dark shadow-sm">
       <div class="card-body text-center">
-        <h6 class="text-muted">🏆 Categoría Top</h6>
+        <h6 class="text-white-50">🏆 Categoría Top</h6>
         <h3>{{ top_categoria }}</h3>
       </div>
     </div>
@@ -86,20 +86,24 @@
 <!-- 📊 Gráfico -->
 <div class="row mb-4">
   
-  <div class="col-md-6">
+  <div class="col-12 col-md-6">
     <div class="card shadow-sm">
       <div class="card-body">
         <h5 class="card-title">Gastos por categoría</h5>
-        <canvas id="pieChart"></canvas>
+        <div class="chart-container">
+          <canvas id="pieChart"></canvas>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="col-md-6">
+  <div class="col-12 col-md-6">
     <div class="card shadow-sm">
       <div class="card-body">
         <h5 class="card-title">Gastos por mes</h5>
+        <div class="chart-container">
         <canvas id="lineChart"></canvas>
+      </div>
       </div>
     </div>
   </div>
@@ -108,13 +112,27 @@
 <hr>
 
 <!-- Lista -->
-<ul class="list-group mt-4">
+ <div class="d-md-none">
+  {% for expense in expenses %}
+    <div class="card mb-2 shadow-sm">
+      <div class="card-body">
+        <div class="d-flex justify-content-between">
+          <strong>{{ expense.description }}</strong>
+          <span class="fw-bold">${{ expense.amount }}</span>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+<div class="d-none d-md-block">
+  <ul class="list-group mt-4">
   {% for expense in expenses %}
     <li class="list-group-item">
       {{ expense.description }} - ${{ expense.amount }}
     </li>
   {% endfor %}
 </ul>
+</div>
 
 {% endblock %}
 
@@ -137,6 +155,10 @@
         datasets: [{
           data: pieData,
         }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false
       }
     });
   }
@@ -152,7 +174,16 @@
           fill: false,
           tension: 0.3
         }]
+      },
+      options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      scales: {
+        y: {
+          beginAtZero: true
+        }
       }
+    }
     });
   }
 </script>

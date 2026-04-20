@@ -5,10 +5,10 @@
 {% block content %}
 <div class="container mt-5">
   <div class="row justify-content-center">
-    <div class="col-md-5">
+    <div class="col-12 col-sm-10 col-md-5">
 
       <div class="card shadow-sm">
-        <div class="card-body">
+        <div class="card-body p-4">
 
           <h3 class="mb-4 text-center">🔐 Iniciar sesión</h3>
 
@@ -23,15 +23,15 @@
                     type="text"
                     name="username"
                     value="{{ form.username.value|default:'' }}"
-                    class="form-control {% if form.username.errors %}is-invalid{% endif %}"
-                    required
+                    class="form-control form-control-lg {% if form.username.errors %}is-invalid{% endif %}"
+                    required autofocus
                 >
 
-                {% for error in form.username.errors %}
-                    <div class="invalid-feedback">
-                    {{ error }}
-                    </div>
-                {% endfor %}
+                {% if form.non_field_errors %}
+                  <div class="alert alert-danger">
+                    {{ form.non_field_errors }}
+                  </div>
+                {% endif %}
             </div>
 
             <!-- Password -->
@@ -41,11 +41,11 @@
             <input 
                 type="password"
                 name="password"
-                class="form-control {% if form.password.errors %}is-invalid{% endif %}"
+                class="form-control form-control-lg {% if form.password.errors %}is-invalid{% endif %}"
                 required
             >
 
-            {% for error in form.password1.errors %}
+            {% for error in form.password.errors %}
                 <div class="invalid-feedback">
                 {{ error }}
                 </div>
@@ -60,7 +60,7 @@
             {% endif %}
 
             <!-- Botón -->
-            <button type="submit" class="btn btn-primary w-100">
+            <button type="submit" class="btn btn-primary btn-lg w-100">
               Entrar
             </button>
 

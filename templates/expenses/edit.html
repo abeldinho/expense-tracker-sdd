@@ -1,15 +1,89 @@
 {% extends "base.html" %}
 
-{% block title %}Gastos{% endblock %}
-
 {% block content %}
-<h2>✏️ Editar gasto</h2>
+<div class="container py-4">
+  <div class="row justify-content-center">
+    <div class="col-12 col-md-6">
 
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button class="btn btn-primary">Guardar cambios</button>
-    <a href="{% url 'expenses:ingresar_expense' %}" class="btn btn-secondary">Cancelar</a>
-</form>
+      <div class="card shadow-sm">
+        <div class="card-body p-4">
 
+          <h3 class="mb-4 text-center">✏️ Editar gasto</h3>
+
+          <form method="post">
+            {% csrf_token %}
+
+            <!-- Monto -->
+            <div class="mb-3">
+              <label class="form-label">Monto</label>
+              <input 
+                type="number"
+                name="amount"
+                value="{{ form.amount.value|stringformat:'s' }}"
+                class="form-control {% if form.amount.errors %}is-invalid{% endif %}"
+                required
+              >
+              {% for error in form.amount.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- Descripción -->
+            <div class="mb-3">
+              <label class="form-label">Descripción</label>
+              <input 
+                type="text"
+                name="description"
+                value="{{ form.description.value }}"
+                class="form-control {% if form.description.errors %}is-invalid{% endif %}"
+                required
+              >
+              {% for error in form.description.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- Categoría -->
+            <div class="mb-3">
+              <label class="form-label">Categoría</label>
+              <select 
+                name="expense_type"
+                class="form-select {% if form.expense_type.errors %}is-invalid{% endif %}"
+                required
+              >
+                {% for cat in form.fields.expense_type.queryset %}
+                  <option value="{{ cat.id }}"
+                    {% if form.expense_type.value == cat.id|stringformat:"s" %}
+                      selected
+                    {% endif %}
+                  >
+                    {{ cat.name }}
+                  </option>
+                {% endfor %}
+              </select>
+
+              {% for error in form.expense_type.errors %}
+                <div class="invalid-feedback">{{ error }}</div>
+              {% endfor %}
+            </div>
+
+            <!-- Botones -->
+            <div class="d-flex gap-2">
+              <button class="btn btn-primary w-100">
+                Guardar cambios
+              </button>
+              <a href="{% url 'expenses:ingresar_expense' %}" 
+                 class="btn btn-outline-secondary w-100">
+                 Cancelar
+              </a>
+            </div>
+
+          </form>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
 {% endblock %}
